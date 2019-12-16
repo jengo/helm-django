@@ -1,0 +1,16 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: django-migrations
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: "-2"
+spec:
+  template:
+    spec:
+      containers:
+        - name: django-migrations
+          image: alpine:latest
+          command: ["sleep", "5"]
+      restartPolicy: Never
