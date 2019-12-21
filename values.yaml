@@ -30,22 +30,53 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+httpPort: 80
+
 service:
   type: ClusterIP
-  port: 80
+  ports:
+    - port: 80
+      targetPort: 8000
+      protocol: TCP
+      name: http
 
-ingress:
-  enabled: false
+# TODO: Not happy with this layout, it's a pain in the ass to use
+traefik:
+  enabled: true
+  ingressRoute:
+    entryPoints:
+      - web
+      - websecure
+    routes:
+      - match: Host(`test.example.com`)
+        kind: Rule
+        services:
+        - name: test-chart-helm-django
+          port: 80
+  ingress:
+    rules:
+      - host: test.example.com
+        http:
+          paths:
+          - backend:
+              serviceName: test-chart-helm-django
+              servicePort: 80
+            path: /
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths: []
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+
+migrationsJob:
+  command:
+    - /app/scripts/entrypoint.sh
+  args:
+    - /app/scripts/run-migrations.sh
+
+deploymentApp:
+  command:
+    - /app/scripts/entrypoint.sh
+  args:
+    - /app/scripts/run-copy-assets.sh
+
+revisionHistoryLimit: 2
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -58,6 +89,34 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+# Environment variables
+env: []
+  # Example:
+  # - name: SECRET_USERNAME
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: mysecret
+  #       key: username
+  # - name: SECRET_PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: mysecret
+  #       key: password
+
+# Attach extra volumes, uses standard Kubernetes deployment format
+volumeMounts: []
+  # Example:
+  # - name: secret-volume
+  #   readOnly: true
+  #   mountPath: "/etc/secret-volume"
+
+volumes: []
+  # Example:
+  # volumes:
+  # - name: secret-volume
+  #   secret:
+  #     secretName: mysecret
 
 nodeSelector: {}
 

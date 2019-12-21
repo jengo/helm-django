@@ -4,8 +4,11 @@ metadata:
   name: {{ include "helm-django.fullname" . }}
   labels:
     {{- include "helm-django.labels" . | nindent 4 }}
+  annotations:
+    checksum/config: {{ toYaml .Values | sha256sum }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
       {{- include "helm-django.selectorLabels" . | nindent 6 }}
@@ -25,22 +28,35 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: {{ .Values.deploymentApp.command }}
+          args: {{ .Values.deploymentApp.args }}
+          env:
+            {{- if gt (len .Values.env) 0 }}
+            {{- toYaml .Values.env | nindent 12 }}
+            {{- end }}
+            - name: NO_MIGRATIONS
+              value: "true {{ (len .Values.env) }}"
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.httpPort }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
