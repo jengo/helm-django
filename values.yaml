@@ -33,6 +33,7 @@ securityContext: {}
 httpPort: 80
 
 service:
+  enabled: true
   type: ClusterIP
   ports:
     - port: 80
@@ -42,7 +43,7 @@ service:
 
 # TODO: Not happy with this layout, it's a pain in the ass to use
 traefik:
-  enabled: true
+  enabled: false
   ingressRoute:
     entryPoints:
       - web
@@ -51,6 +52,8 @@ traefik:
       - match: Host(`test.example.com`)
         kind: Rule
         services:
+        # NOTE: You must update this to match {{ include "helm-django.fullname" . }}
+        # This will be improved in the future
         - name: test-chart-helm-django
           port: 80
   ingress:
@@ -59,9 +62,14 @@ traefik:
         http:
           paths:
           - backend:
+              # NOTE: You must update this to match {{ include "helm-django.fullname" . }}
+              # This will be improved in the future
               serviceName: test-chart-helm-django
               servicePort: 80
             path: /
+    tls:
+    - hosts:
+      - test.example.com
   annotations: {}
 
 migrationsJob:
