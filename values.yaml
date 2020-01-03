@@ -2,6 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# annotations that are set on deployment and job
+annotations: {}
+# Example use:
+# annotations:
+#   vault.security.banzaicloud.io/vault-addr: "https://vault.vault:8200"
+#   vault.security.banzaicloud.io/vault-tls-secret: "vault-tls"
+
 replicaCount: 1
 
 image:
