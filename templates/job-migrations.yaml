@@ -1,4 +1,4 @@
----
+{{- if .Values.migrationsJob.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -25,3 +25,4 @@ spec:
           env:
             {{- toYaml .Values.env | nindent 12}}
       restartPolicy: Never
+{{- end }}

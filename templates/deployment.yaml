@@ -1,5 +1,10 @@
+{{- if .Values.argoWorkflow.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+{{- else}}
 apiVersion: apps/v1
 kind: Deployment
+{{- end }}
 metadata:
   name: {{ include "helm-django.fullname" . }}
   labels:
@@ -12,6 +17,10 @@ spec:
   selector:
     matchLabels:
       {{- include "helm-django.selectorLabels" . | nindent 6 }}
+{{- if .Values.argoWorkflow.enabled }}
+  strategy:
+    {{- toYaml .Values.argoWorkflow.strategy | nindent 4 }}
+{{- end }}
   template:
     metadata:
       labels:
@@ -40,21 +49,25 @@ spec:
             {{- end }}
             - name: NO_MIGRATIONS
               value: "true {{ (len .Values.env) }}"
+
           ports:
             - name: http
               containerPort: {{ .Values.httpPort }}
               protocol: TCP
 
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          {{- if .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          {{- end }}
+
+          {{- if .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          {{- end }}
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
       volumes:
