@@ -20,6 +20,17 @@ argoWorkflow:
     # blueGreen:
     #   enabled: false
 
+# This is intended to run the same django container and tag
+cronJobs:
+  restartPolicy: OnFailure
+  containers:
+    - name: hello
+      schedule: "*/1 * * * * "
+      args:
+        - /bin/sh
+        - -c
+        - env
+
 replicaCount: 1
 
 image:
