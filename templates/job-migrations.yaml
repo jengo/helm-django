@@ -4,9 +4,8 @@ kind: Job
 metadata:
   generateName: django-migrations
   annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "-2"
-    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+  {{ toYaml .Values.migrationsJob.annotations | nindent 4 }}
+
   labels:
     {{- include "helm-django.labels" . | nindent 4 }}
 spec:
@@ -14,7 +13,8 @@ spec:
   template:
     metadata:
       annotations:
-        {{- toYaml .Values.annotations | nindent 8 }}
+      {{ toYaml .Values.migrationsJob.annotations | nindent 8 }}
+
     spec:
       containers:
         - name: django-migrations

@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 # annotations that are set on deployment and job
-annotations: {}
+podAnnotations: {}
 # Example use:
 # annotations:
 #   vault.security.banzaicloud.io/vault-addr: "https://vault.vault:8200"
@@ -23,13 +23,17 @@ argoWorkflow:
 # This is intended to run the same django container and tag
 cronJobs:
   restartPolicy: OnFailure
-  containers:
-    - name: hello
-      schedule: "*/1 * * * * "
-      args:
-        - /bin/sh
-        - -c
-        - env
+  containers: []
+  # containers:
+  #   - name: hello
+  #     schedule: "*/1 * * * * "
+  #     args:
+  #       - /bin/sh
+  #       - -c
+  #       - env
+
+deployment:
+  enabled: true
 
 replicaCount: 1
 
@@ -111,6 +115,9 @@ ingress:
 
 
 migrationsJob:
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
   enabled: true
   command:
     - /app/scripts/entrypoint.sh

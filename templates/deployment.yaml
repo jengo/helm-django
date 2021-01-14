@@ -1,3 +1,4 @@
+{{- if .Values.deployment.enabled }}
 {{- if .Values.argoWorkflow.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -10,7 +11,7 @@ metadata:
   labels:
     {{- include "helm-django.labels" . | nindent 4 }}
   annotations:
-    checksum/config: {{ toYaml .Values | sha256sum }}
+    {{- include "helm-django.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
@@ -26,7 +27,7 @@ spec:
       labels:
         {{- include "helm-django.selectorLabels" . | nindent 8 }}
       annotations:
-        {{- toYaml .Values.annotations | nindent 8 }}
+        {{- include "helm-django.annotations" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -84,3 +85,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+{{- end }}
