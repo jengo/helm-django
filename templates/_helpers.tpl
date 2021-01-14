@@ -44,6 +44,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
+Common annotations (TODO: Should this be split into podAnnotations and others ?)
+*/}}
+{{- define "helm-django.annotations" -}}
+checksum/config: {{ toYaml .Values | sha256sum }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations }}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
 Selector labels
 */}}
 {{- define "helm-django.selectorLabels" -}}
