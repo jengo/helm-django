@@ -55,9 +55,6 @@ traefikIngressRoute:
 resources: {}
 
 migrationsJob:
-  annotations:
-    argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
   enabled: true
   command:
     - /bin/sh

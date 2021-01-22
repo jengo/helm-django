@@ -2,13 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# annotations that are set on deployment and job
-podAnnotations: {}
-# Example use:
-# annotations:
-#   vault.security.banzaicloud.io/vault-addr: "https://vault.vault:8200"
-#   vault.security.banzaicloud.io/vault-tls-secret: "vault-tls"
-
 # Changes Deployment type to Rollout
 argoWorkflow:
   enabled: false
@@ -22,6 +15,7 @@ argoWorkflow:
 
 # This is intended to run the same django container and tag
 cronJobs:
+  annotations: {}
   restartPolicy: OnFailure
   containers: []
   # containers:
@@ -33,6 +27,7 @@ cronJobs:
   #       - env
 
 deployment:
+  annotations: {}
   enabled: true
 
 replicaCount: 1
@@ -115,9 +110,10 @@ ingress:
 
 
 migrationsJob:
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+  annotations: {}
+  # helmHooks or argocdHooks ... don't use both
+  helmHooks: true
+  argocdHooks: false
   enabled: true
   command:
     - /app/scripts/entrypoint.sh

@@ -44,12 +44,12 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
-Common annotations (TODO: Should this be split into podAnnotations and others ?)
+Checksum annotations and specific annotations to type (example: cronJobs)
 */}}
 {{- define "helm-django.annotations" -}}
-checksum/config: {{ toYaml .Values | sha256sum }}
-{{- if .Values.podAnnotations }}
-{{ toYaml .Values.podAnnotations }}
+checksum/config: {{ toYaml $.Values | sha256sum }}
+{{- if .annotations }}
+{{ toYaml .annotations }}
 {{- end -}}
 {{- end -}}
 
