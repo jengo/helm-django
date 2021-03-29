@@ -19,6 +19,9 @@ spec:
   failedJobsHistoryLimit: {{ .failedJobsHistoryLimit | default 1 }}
   jobTemplate:
     spec:
+      {{- if $.Values.cronJobs.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ $.Values.cronJobs.ttlSecondsAfterFinished }}
+      {{- end }}
       template:
         metadata:
           name: "{{ include "helm-django.fullname" $ }}-{{ .name }}"

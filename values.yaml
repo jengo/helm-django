@@ -17,6 +17,7 @@ argoWorkflow:
 cronJobs:
   annotations: {}
   restartPolicy: OnFailure
+  # ttlSecondsAfterFinished
   containers: []
   # containers:
   #   - name: hello
