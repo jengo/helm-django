@@ -28,6 +28,9 @@ spec:
     metadata:
       labels:
         {{- include "helm-django.selectorLabels" . | nindent 8 }}
+        {{- if .Values.deployment.podLabels }}
+        {{- toYaml .Values.deployment.podLabels | nindent 8 }}
+        {{- end }}
       annotations:
         {{- if .Values.deployment.annotations }}
         {{- toYaml .Values.deployment.annotations  | nindent 8 }}

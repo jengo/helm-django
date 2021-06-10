@@ -30,6 +30,7 @@ cronJobs:
 deployment:
   annotations: {}
   enabled: true
+  podLabels: {}
 
 replicaCount: 1
 
