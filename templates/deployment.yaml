@@ -59,7 +59,7 @@ spec:
               value: "true {{ (len .Values.env) }}"
 
           ports:
-            - name: http
+            - name: {{ .Values.httpPortName }}
               containerPort: {{ .Values.httpPort }}
               protocol: TCP
 

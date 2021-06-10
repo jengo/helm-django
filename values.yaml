@@ -60,6 +60,8 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# When running Istio, the name should match the protocol type (http or https)
+httpPortName: http
 httpPort: 80
 
 livenessProbe: null
