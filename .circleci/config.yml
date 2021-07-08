@@ -20,7 +20,7 @@ jobs:
           command: make test
       - run:
           name: "Checkout charts repo"
-          command: git clone git@github.com:jengo/helm-charts.git -b test
+          command: git clone git@github.com:jengo/helm-charts.git -b test ${HOME}/helm-charts
       - run:
           name: Update version tag for dev build
           command: |
@@ -33,8 +33,9 @@ jobs:
           name: "Package and push"
           command: |
             helm package .
-            mv helm-django*gz helm-charts/chats
-            helm repo index --url https://jengo.github.io/helm-charts/ helm-charts/charts
+            mv helm-django*gz ${HOME}/helm-charts/charts
+            cd ${HOME}/helm-charts
+            helm repo index --url https://jengo.github.io/helm-charts/ charts
             git add helm-charts/charts
             git commit -m 'test'
 
