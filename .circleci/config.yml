@@ -15,7 +15,9 @@ jobs:
           condition:
             equal: [ prototype, << pipeline.git.branch >> ]
           steps:
-            - run: echo "test"
+            - run:
+                name: "Package"
+                command: helm package
 
 workflows:
   build_and_test:
