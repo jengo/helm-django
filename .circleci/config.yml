@@ -22,8 +22,13 @@ jobs:
           command: |
             export SHORT_GIT_HASH="${CIRCLE_SHA1:0:7}"
             if [[ "${CIRCLE_BRANCH}" != "main" ]]; then \
-              yq eval ".version += \"+${SHORT_GIT_HASH}\"" Chart.yaml; \
+              yq eval ".version += \"+${SHORT_GIT_HASH}\"" -i Chart.yaml; \
             fi
+
+            mv helm-django*gz helm-charts/chats
+            helm repo index --url https://jengo.github.io/helm-charts/ helm-charts/charts
+            git add helm-charts/charts
+            git commit -m 'test'
 
       - run:
           name: "Package"
