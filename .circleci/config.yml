@@ -6,12 +6,12 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Install helm
-        command: sudo curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+          name: Install helm
+          command: sudo curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
       - run:
-        name: Run tests
-        command: make test
+          name: Run tests
+          command: make test
       - run:
-        name: Deploy if main branch
-        command: |
-          if [[ "${CIRCLE_BRANCH}" == "main" ]]; then echo "is main branch"; fi
+          name: Deploy if main branch
+          command: |
+            if [[ "${CIRCLE_BRANCH}" == "main" ]]; then echo "is main branch"; fi
