@@ -13,4 +13,5 @@ jobs:
         command: make test
       - run:
         name: Deploy if main branch
-        command: if [[ ${CIRCLE_BRANCH} == "main" ]]; then echo "is main branch"; fi
+        command: |
+          if [[ "${CIRCLE_BRANCH}" == "main" ]]; then echo "is main branch"; fi
