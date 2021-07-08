@@ -11,13 +11,9 @@ jobs:
       - run:
           name: Run tests
           command: make test
-      - run:
-          name: Deploy if main branch
-          command: |
-            if [[ "${CIRCLE_BRANCH}" == "main" ]]; then echo "is main branch"; fi
       - when:
           condition:
-            equal: [ main, << pipeline.git.branch >> ]
+            equal: [ prototype, << pipeline.git.branch >> ]
           steps:
             - run: echo "test"
 
