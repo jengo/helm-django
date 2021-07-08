@@ -11,6 +11,10 @@ jobs:
             sudo curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
             sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
             sudo chmod +x /usr/bin/yq
+
+            git config --global user.name "CircleCI"
+            git config --global user.email "dev.toaster+circleci@gmail.com"
+
       - run:
           name: Run tests
           command: make test
