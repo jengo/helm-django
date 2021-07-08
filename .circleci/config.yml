@@ -15,3 +15,8 @@ jobs:
           name: Deploy if main branch
           command: |
             if [[ "${CIRCLE_BRANCH}" == "main" ]]; then echo "is main branch"; fi
+
+workflows:
+  build_and_test:
+    jobs:
+      - test
