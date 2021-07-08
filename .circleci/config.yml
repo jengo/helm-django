@@ -7,7 +7,9 @@ jobs:
       - checkout
       - run:
           name: Install helm
-          command: sudo curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+          command: |
+            sudo curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+            sudo apt install yq
       - run:
           name: Run tests
           command: make test
