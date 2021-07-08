@@ -15,8 +15,21 @@ jobs:
           name: Deploy if main branch
           command: |
             if [[ "${CIRCLE_BRANCH}" == "main" ]]; then echo "is main branch"; fi
+  deploy:
+    docker:
+      - image: cimg/base:2021.04
+    steps:
+      - run:
+          name: Test
+          command: echo "test"
 
 workflows:
-  build_and_test:
+  test:
     jobs:
       - test
+  conditional-workflow:
+  when:
+    and:
+      - equal: [ "${CIRCLE_BRANCH}", "main" ]
+    jobs:
+      - deploy
