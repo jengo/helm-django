@@ -6,11 +6,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install helm
+          name: Install dependancies
           command: |
             sudo curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-            sudo apt update
-            sudo apt install -y yq
+            sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
       - run:
           name: Run tests
           command: make test
