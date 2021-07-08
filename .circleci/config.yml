@@ -25,14 +25,14 @@ jobs:
               yq eval ".version += \"+${SHORT_GIT_HASH}\"" -i Chart.yaml; \
             fi
 
+      - run:
+          name: "Package and push"
+          command: |
+            helm package .
             mv helm-django*gz helm-charts/chats
             helm repo index --url https://jengo.github.io/helm-charts/ helm-charts/charts
             git add helm-charts/charts
             git commit -m 'test'
-
-      - run:
-          name: "Package"
-          command: helm package .
 
 workflows:
   build_and_test:
