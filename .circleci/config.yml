@@ -11,21 +11,20 @@ jobs:
       - run:
           name: Run tests
           command: make test
-          steps:
-            - run:
-                name: "Checkout charts repo"
-                command: git clone git@github.com:jengo/helm-charts.git -b test
-            - nun:
-                name: Update version tag for dev build
-                when:
-                  - not:
-                      equal: [ main, << pipeline.git.branch >> ]
-                command: |
-                  export SHORT_GIT_HASH="${CIRCLE_SHA1:0:7}"
-                  yq eval ".version += \"+${SHORT_GIT_HASH}\"" Chart.yaml
-            - run:
-                name: "Package"
-                command: helm package .
+      - run:
+          name: "Checkout charts repo"
+          command: git clone git@github.com:jengo/helm-charts.git -b test
+      - nun:
+          name: Update version tag for dev build
+          when:
+            - not:
+                equal: [ main, << pipeline.git.branch >> ]
+          command: |
+            export SHORT_GIT_HASH="${CIRCLE_SHA1:0:7}"
+            yq eval ".version += \"+${SHORT_GIT_HASH}\"" Chart.yaml
+      - run:
+          name: "Package"
+          command: helm package .
 
 workflows:
   build_and_test:
