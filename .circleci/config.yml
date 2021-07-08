@@ -22,9 +22,9 @@ jobs:
           command: |
             export SHORT_GIT_HASH="${CIRCLE_SHA1:0:7}"
             yq eval ".version += \"+${SHORT_GIT_HASH}\"" Chart.yaml
-            when:
-              - not:
-                  equal: [ main, << pipeline.git.branch >> ]
+          when:
+            - not:
+                equal: [ main, << pipeline.git.branch >> ]
 
       - run:
           name: "Package"
