@@ -9,7 +9,8 @@ jobs:
           name: Install helm
           command: |
             sudo curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-            sudo apt install yq
+            sudo apt update
+            sudo apt install -y yq
       - run:
           name: Run tests
           command: make test
