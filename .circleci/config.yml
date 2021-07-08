@@ -16,8 +16,12 @@ jobs:
             equal: [ prototype, << pipeline.git.branch >> ]
           steps:
             - run:
+                name: "Checkout charts repo"
+                command: git clone git@github.com:jengo/helm-charts.git -b test
+            - run:
                 name: "Package"
-                command: helm package
+                command: helm package .
+            
 
 workflows:
   build_and_test:
