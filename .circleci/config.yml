@@ -36,7 +36,7 @@ jobs:
             mv ${HOME}/project/helm-django*gz ${HOME}/helm-charts/charts
             cd ${HOME}/helm-charts
             helm repo index --url https://jengo.github.io/helm-charts/ charts
-            git add helm-charts/charts
+            git add charts
             git commit -m 'test'
 
 workflows:
