@@ -38,6 +38,7 @@ jobs:
             helm repo index --url https://jengo.github.io/helm-charts/ charts
             git add charts
             git commit -m 'test'
+            git push
 
 workflows:
   build_and_test:
