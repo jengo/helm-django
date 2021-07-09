@@ -31,16 +31,16 @@ jobs:
             if [[ "${CIRCLE_BRANCH}" != "main" ]]; then \
               yq eval ".version += \"+${SHORT_GIT_HASH}\"" -i Chart.yaml; \
             fi
-
       - run:
           name: "Package and push"
           command: |
+            export VERSION=$( yq e '.version' Chart.yaml )
             helm package .
             mv ${HOME}/project/helm-django*gz ${HOME}/helm-charts/charts
             cd ${HOME}/helm-charts
             helm repo index --url https://jengo.github.io/helm-charts/ charts
             git add charts
-            git commit -m 'test'
+            git commit -m "Release ${VERSION}"
             git push
 
 workflows:
