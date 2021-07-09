@@ -7,6 +7,6 @@ This goes hand and hand with [Jolene Engo's (jengo) simple django boiler plate w
 ## Add to helm repos
 To add this to helm you will need to run
 ```
-helm repo add jengo https://jengo.github.io/helm-charts/
+helm repo add jengo https://helm.jolene.dev/
 helm repo update
 ```
