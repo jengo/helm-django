@@ -1,0 +1,17 @@
+{{- if .Values.traefikIngressRoute.enabled -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "helm-django.fullname" . }}-ingressroute
+  labels:
+    {{- include "helm-django.labels" . | nindent 4 }}
+spec:
+  entryPoints:
+    {{- toYaml .Values.traefikIngressRoute.entryPoints | nindent 4 }}
+  routes:
+    {{- toYaml .Values.traefikIngressRoute.routes | nindent 4 }}
+  tls:
+    {{- with .Values.traefikIngressRoute.tls }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- end }}

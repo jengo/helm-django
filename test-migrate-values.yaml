@@ -1,0 +1,133 @@
+argoWorkflow:
+  enabled: true
+
+deployment:
+  enabled: false
+
+podAnnotations:
+  vault.security.banzaicloud.io/vault-addr: "https://vault.vault:8200"
+  vault.security.banzaicloud.io/vault-tls-secret: "vault-tls"
+
+image:
+  repository: nginx
+  tag: latest
+
+replicaCount: 2
+
+imagePullSecrets:
+  - name: dockerconfig
+
+# This is intended to run the same django container and tag
+cronJobs:
+  enabled: false
+  restartPolicy: OnFailure
+  containers: []
+
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  enabled: false
+
+ingress:
+  enabled: false
+
+traefikIngressRoute:
+  enabled: false
+
+
+resources: {}
+
+migrationsJob:
+  enabled: true
+  command:
+    - /bin/sh
+    - -c
+  args:
+    - sleep 30
+
+# Environment variables
+env:
+  # Example:
+  - name: SECRET_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: test
+        key: username
+
+  - name: SECRET_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: test
+        key: password
+
+  - name: SITE_SCHEME
+    value: http
+
+  - name: SITE_DOMAIN
+    value: test1.sandbox.jumpstart.me
+
+  - name: DB_HOST
+    value: xxx.yyy.us-east-1.rds.amazonaws.com
+  
+  - name: DB_PORT
+    value: "5432"
+
+  - name: DATABASE_URL
+    value: postgres://postgres:test123:@xxx.yyy.us-east-1.rds.amazonaws.com/test1
+
+  - name: DJANGO_SECRET_KEY
+    value: "XXXXXX"
+
+  - name: DJANGO_ADMINS
+    value: "127.0.0.1"
+
+  - name: CORS_ORIGIN_WHITELIST
+    value: "*"
+
+  - name: EMAIL_HOST
+    value: ""
+
+  - name: EMAIL_HOST_USER
+    value: ""
+
+  - name: EMAIL_HOST_PASSWORD
+    value: "12345"
+
+httpPort: 8000
+
+# Attach extra volumes, uses standard Kubernetes deployment format
+volumeMounts:
+  # Example:
+  - name: secret-volume
+    readOnly: true
+    mountPath: "/etc/secret-volume"
+
+volumes:
+  # Example:
+  - name: secret-volume
+    secret:
+      secretName: test
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+

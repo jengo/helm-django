@@ -1,0 +1,56 @@
+{{- range .Values.cronJobs.containers }}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ include "helm-django.fullname" $ }}-{{ .name }}"
+  labels:
+    {{- include "helm-django.labels" $ | nindent 4 }}
+
+  annotations:
+    checksum/config: {{ toYaml $.Values | sha256sum }}
+    {{- if $.Values.cronJobs.annotations }}
+    {{- toYaml $.Values.cronJobs.annotations | nindent 4 }}
+    {{- end }}
+
+spec:
+  schedule: {{ .schedule | quote }}
+  successfulJobsHistoryLimit: {{ .successfulJobsHistoryLimit | default 3 }}
+  failedJobsHistoryLimit: {{ .failedJobsHistoryLimit | default 1 }}
+  jobTemplate:
+    spec:
+      {{- if $.Values.cronJobs.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ $.Values.cronJobs.ttlSecondsAfterFinished }}
+      {{- end }}
+      template:
+        metadata:
+          name: "{{ include "helm-django.fullname" $ }}-{{ .name }}"
+          labels:
+            {{- include "helm-django.labels" $ | nindent 12 }}
+
+          annotations:
+            checksum/config: {{ toYaml $.Values | sha256sum }}
+            {{- if $.Values.cronJobs.annotations }}
+            {{- toYaml $.Values.cronJobs.annotations | nindent 12 }}
+            {{- end }}
+        spec:
+          {{- with $.Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          restartPolicy: {{ $.Values.cronJobs.restartPolicy | default "Always" }}
+          containers:
+          - name: {{ .name }}
+            image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          {{- with .args }}
+            args:
+              {{- toYaml . | nindent 14 }}
+          {{- end }}
+            env:
+              {{- if gt (len $.Values.env) 0 }}
+              {{- toYaml $.Values.env | nindent 14 }}
+              {{- end }}
+              - name: NO_MIGRATIONS
+                value: "true {{ (len $.Values.env) }}"
+
+{{- end }}

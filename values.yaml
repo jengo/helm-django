@@ -1,0 +1,179 @@
+# Default values for helm-django.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Changes Deployment type to Rollout
+argoWorkflow:
+  enabled: false
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {}
+    # blueGreen:
+    #   enabled: false
+
+# This is intended to run the same django container and tag
+cronJobs:
+  annotations: {}
+  restartPolicy: OnFailure
+  # ttlSecondsAfterFinished
+  containers: []
+  # containers:
+  #   - name: hello
+  #     schedule: "*/1 * * * * "
+  #     args:
+  #       - /bin/sh
+  #       - -c
+  #       - env
+
+deployment:
+  annotations: {}
+  enabled: true
+  podLabels: {}
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# When running Istio, the name should match the protocol type (http or https)
+httpPortName: http
+httpPort: 80
+
+livenessProbe: null
+  # httpGet:
+  #   path: /
+  #   port: http
+
+readinessProbe: null
+  # httpGet:
+  #   path: /
+  #   port: http
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8000
+      protocol: TCP
+      name: http
+
+# TODO: Not happy with this layout, it's a pain in the ass to use
+traefikIngressRoute:
+  enabled: false
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`test.example.com`)
+      kind: Rule
+      services:
+      # NOTE: You must update this to match {{ include "helm-django.fullname" . }}
+      # This will be improved in the future
+      - name: test-chart-helm-django
+        port: 80
+  # tls:
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+migrationsJob:
+  annotations: {}
+  # helmHooks or argocdHooks ... don't use both
+  helmHooks: true
+  argocdHooks: false
+  enabled: true
+  command:
+    - /app/scripts/entrypoint.sh
+  args:
+    - /app/scripts/run-migrations.sh
+
+deploymentApp:
+  command:
+    - /app/scripts/entrypoint.sh
+  args:
+    - /app/scripts/run-copy-assets.sh
+
+revisionHistoryLimit: 2
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# Environment variables
+env: []
+  # Example:
+  # - name: SECRET_USERNAME
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: mysecret
+  #       key: username
+  # - name: SECRET_PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: mysecret
+  #       key: password
+
+# Attach extra volumes, uses standard Kubernetes deployment format
+volumeMounts: []
+  # Example:
+  # - name: secret-volume
+  #   readOnly: true
+  #   mountPath: "/etc/secret-volume"
+
+volumes: []
+  # Example:
+  # volumes:
+  # - name: secret-volume
+  #   secret:
+  #     secretName: mysecret
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

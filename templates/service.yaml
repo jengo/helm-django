@@ -1,0 +1,16 @@
+{{- if .Values.service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "helm-django.fullname" . }}
+  labels:
+    {{- include "helm-django.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    {{- with .Values.service.ports }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  selector:
+    {{- include "helm-django.selectorLabels" . | nindent 4 }}
+{{- end }}

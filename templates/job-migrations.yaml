@@ -1,0 +1,48 @@
+{{- if .Values.migrationsJob.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: django-migrations
+  annotations:
+    checksum/config: {{ toYaml .Values | sha256sum }}
+    {{- if .Values.migrationsJob.annotations }}
+    {{- toYaml .Values.migrationsJob.annotations | nindent 4 }}
+    {{- end }}
+    {{- if .Values.migrationsJob.helmHooks }}
+    helm.sh/hook: pre-install
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    {{- end }}
+    {{- if .Values.migrationsJob.argocdHooks }}
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+    {{- end }}
+  labels:
+    {{- include "helm-django.labels" . | nindent 4 }}
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ toYaml .Values | sha256sum }}
+        {{- if .Values.migrationsJob.annotations }}
+        {{- toYaml .Values.migrationsJob.annotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.migrationsJob.helmHooks }}
+        helm.sh/hook: pre-install
+        helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+        {{- end }}
+        {{- if .Values.migrationsJob.argocdHooks }}
+        argocd.argoproj.io/hook: PreSync
+        argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+        {{- end }}
+    spec:
+      containers:
+        - name: django-migrations
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: {{ .Values.migrationsJob.command }}
+          args: {{ .Values.migrationsJob.args }}
+          env:
+            {{- toYaml .Values.env | nindent 12}}
+      restartPolicy: Never
+{{- end }}
