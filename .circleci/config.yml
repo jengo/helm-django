@@ -17,13 +17,12 @@ jobs:
 
             git config --global user.name "CircleCI"
             git config --global user.email "dev.toaster+circleci@gmail.com"
-
       - run:
           name: Run tests
           command: make test
       - run:
           name: "Checkout charts repo"
-          command: git clone git@github.com:jengo/helm-charts.git -b test ${HOME}/helm-charts
+          command: git clone git@github.com:jengo/helm-charts.git ${HOME}/helm-charts
       - run:
           name: Update version tag for dev build
           command: |
