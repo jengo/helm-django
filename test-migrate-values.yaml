@@ -4,6 +4,14 @@ argoWorkflow:
 deployment:
   enabled: false
 
+certManager:
+  enabled: true
+  fqdn: example.jolene.dev
+  issuer:
+    # Required value: set issuer for cert-manager
+    # https://cert-manager.io/docs/concepts/issuer/
+    name: "letsencrypt-prod"
+
 podAnnotations:
   vault.security.banzaicloud.io/vault-addr: "https://vault.vault:8200"
   vault.security.banzaicloud.io/vault-tls-secret: "vault-tls"

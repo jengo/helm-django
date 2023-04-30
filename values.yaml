@@ -83,6 +83,14 @@ service:
       protocol: TCP
       name: http
 
+certManager:
+  enabled: false
+  fqdn: example.jolene.dev
+  issuer:
+    # Required value: set issuer for cert-manager
+    # https://cert-manager.io/docs/concepts/issuer/
+    name: "letsencrypt-prod"
+
 # TODO: Not happy with this layout, it's a pain in the ass to use
 traefikIngressRoute:
   enabled: false

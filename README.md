@@ -1,4 +1,6 @@
 # helm-django
+[![jengo](https://circleci.com/gh/jengo/helm-django.svg?style=svg)](<LINK>)
+
 
 This helm template is intentionally very generic and basic.  This is meant to act as a starting point to get your application up and running with little effort.
 
