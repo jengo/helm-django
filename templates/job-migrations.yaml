@@ -40,6 +40,10 @@ spec:
         - name: django-migrations
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
           command: {{ .Values.migrationsJob.command }}
           args: {{ .Values.migrationsJob.args }}
           env:
