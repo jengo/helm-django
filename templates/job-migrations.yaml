@@ -36,14 +36,14 @@ spec:
         argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
         {{- end }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+          {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
         - name: django-migrations
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.imagePullSecrets }}
-          imagePullSecrets:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
           command: {{ .Values.migrationsJob.command }}
           args: {{ .Values.migrationsJob.args }}
           env:
