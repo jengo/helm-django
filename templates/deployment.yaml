@@ -76,10 +76,14 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
+          {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
