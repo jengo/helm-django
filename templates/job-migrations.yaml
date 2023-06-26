@@ -36,7 +36,7 @@ spec:
         argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
         {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
           {{- toYaml . | nindent 6 }}
       {{- end }}
@@ -46,15 +46,15 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: {{ .Values.migrationsJob.command }}
           args: {{ .Values.migrationsJob.args }}
-          {{- with .Values.env }}
+          {{- if gt (len .Values.env) 0 }}
           env:
             {{- toYaml .Values.env | nindent 12}}
           {{- end }}
-          {{- with .Values.volumeMounts }}
+          {{- if .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
+      {{- if .Values.volumes }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
       {{- end }}
