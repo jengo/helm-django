@@ -46,7 +46,17 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: {{ .Values.migrationsJob.command }}
           args: {{ .Values.migrationsJob.args }}
+          {{- with .Values.env }}
           env:
             {{- toYaml .Values.env | nindent 12}}
+          {{- end }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
+      {{- end }}
       restartPolicy: Never
 {{- end }}
