@@ -38,7 +38,7 @@ spec:
     spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-          {{- toYaml . | nindent 6 }}
+          {{- toYaml .Values.imagePullSecrets | nindent 6 }}
       {{- end }}
       containers:
         - name: django-migrations
